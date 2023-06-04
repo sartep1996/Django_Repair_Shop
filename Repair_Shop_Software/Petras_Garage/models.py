@@ -125,5 +125,26 @@ class OrderLine(models.Model):
     def get_absolute_url(self):
         return reverse("order_line_detail", kwargs={"pk": self.pk})
     
-    def display_paslauga(self):
+    def display_service(self):
         return ','.join(service.name for service in self.service.all()[:3])
+    
+    def save(self, *args, **kwargs):
+        if self.price == 0:
+            self.price = self.service.price
+        self.total = self.price * self.quantity
+        super().save(*args, **kwargs)
+        self.order.price = self.order.order_entries.aggregate(models.Sum("total"))["total__sum"]
+        self.order.save()
+
+    STATUS_CHOICES = [
+        ("new", "New"),
+        ("processing", "Processing"),
+        ("complete", "Complete"),
+        ("cancelled", "Cancelled"),
+    ]
+    status = models.CharField(
+        _("Status"),
+        max_length=20, 
+        choices=STATUS_CHOICES, 
+        default=0, 
+        db_index=True)

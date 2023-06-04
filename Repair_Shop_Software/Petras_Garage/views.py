@@ -1,8 +1,12 @@
+from typing import Any
+from django.db.models.query import QuerySet
 from django.shortcuts import render, get_object_or_404
 from .models import Vehicle, VehicleModel, Service, Order, OrderLine
 from django.views import generic
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.views import View
+
 
 
 
@@ -65,8 +69,44 @@ def vehicle_detail(request, pk:int):
 
 class OrderView(generic.ListView):
     model = Order
+    paginate_by = 6
     template_name = 'Petras_Garage/order_list.html'
 
-class OrderDetailView(generic.DetailView):
-    model = Order
-    template_name = 'Petras_Garage/order_detail.html'
+    def get_queryset(self) -> QuerySet[Any]:
+        qs = super().get_queryset()
+        query = self.request.GET.get('query')
+        if query:
+            qs = qs.filter(
+                Q(date__icontains=query) |
+                Q(vehicle__customer__icontains=query) |
+                Q(vehicle__license_plate__icontains=query) |
+                Q(vehicle__vin_code__istartswith=query) |
+                Q(vehicle__model__model__icontains=query)
+            )
+        return qs
+
+# class OrderDetailView(generic.DetailView):
+#     model = Order
+#     template_name = 'Petras_Garage/order_detail.html'
+#     total_price = sum(entry.price for entry in order.order_entries.all())
+
+#     context_object_name = 'order'
+
+# class OrderDetailView(generic.DetailView):
+#     def get(self, request, pk):
+#         order = get_object_or_404(Order, pk=pk)
+#         total_price = sum(entry.price for entry in order.order_entries.all())
+#         return render(request, 'service/orders_detail.html', {
+#             'order': order,
+#             'total_price': total_price
+#         })
+    
+
+class OrderDetailView(View):
+    def get(self, request, pk):
+        order = get_object_or_404(Order, pk=pk)
+        total_price = order.order_entries.aggregate(Sum('price'))['price__sum']
+        return render(request, 'service/orders_detail.html', {
+            'order': order,
+            'total_price': total_price
+        })
