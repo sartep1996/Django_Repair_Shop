@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset = "UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{% block title %}Petra's Vehicle Repair Shop{% endblock title %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+<header>
+    <ul class="nav">
+        <li class="logo">&#128218; Vehicle Service</li>
+        <li><a href="{%url 'index' %}">Home</a></li>
+        <li><a href="{%url 'vehicle_list' %}">Vehicles</a></li>
+        <li><a href="{%url 'order_list' %}">Orders</a></li>
+    </ul>
+</header>
+<main>{%block content%}
+{%endblock content %}</main>
+<footer><p>&copy; 2023 <a href="https//discord.gg/QAUWnqGF" target="_blank">Petra's Vehicle Repair Shop</a></p></footer>
+</body>
+</html>
+

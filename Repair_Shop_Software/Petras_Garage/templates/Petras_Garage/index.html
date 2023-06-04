@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %} Welcome to {{ block.super }}{% endblock title %}
+{% block content %}
+<h1> Petras' Vehicle Repair Shop </h1>
+<p> Welcome! </p>
+<p> Our vehicles and services </p>
+<ul>
+    <li><strong> Vehicles:</strong> {{ num_vehicles }}</li>
+    <li><strong> Vehicle Models:</strong> {{ num_vehicle_models }}</li>
+    <li><strong> Service Number:</strong> {{ num_sevice }}</li>
+    <li><strong> Order Number:</strong> {{ num_order }}</li>
+</ul>
+{% endblock content %}

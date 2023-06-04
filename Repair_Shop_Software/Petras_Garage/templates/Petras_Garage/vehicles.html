@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Vehicles {{ block.super }}{% endblock title %}
+{% block content %}
+<h1> Vehicles </h1>
+{% include 'includes/search.html' %}
+{% if vehicle_list %}
+{% comment %} {% with automobiliu_list as page_obj %} {% endcomment %}
+{% include 'includes/paginator_nav.html' %}
+{% comment %} {% endwith  %} {% endcomment %}
+<ul class='vehicles-'>
+    {% for vehicle in vehicle_list %}
+        <li>
+            <a href="{% url 'vehicle_detail' vehicle.pk %}">
+                {% if vehicle.photo %}
+                    <img class="vehicle-photo" src="{{vehicle.photo.ulr}}">
+                {% else %}
+                    <img class="vehicle-photo" src="{% static 'Petras_Garage/img/default_photo.jpg'%}">
+                {% endif %}
+                <h3>
+                    {% if vehicle.vehicle_model|length > 36 %}
+                        {{vehicle.vehicle_model|slice:35}}...
+                    {% else %}
+                        {{vehicle.vehicle_model}}
+                    {% endif %}
+                </h3>
+            </a>
+            {% comment %} <p>by <a href="{% url 'automobiliu_detail', automobil.Automobilis.pk %}">{{ automobilis.Automobilis}} {% endcomment %}
+        </li>
+    {% endfor %}
+</ul>
+{% with vehicle_list as page_obj %}
+    {% include 'includes/paginator_pages.html' %}
+{% endwith %}
+{% else %}
+    <p>Nerasta Automobiliu</p>
+{% endif %}
+{% endblock content %}

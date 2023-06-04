@@ -1,0 +1,105 @@
+html { font-family: 'Times New Roman', Times, serif; }
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding: 0;
+    margin: 0;
+}
+header {
+    background-color: #437ee6;
+}
+header ul.nav {
+    display: flex;
+    flex-direction: row;
+    list-style: none;
+    padding-inline-start: 0;
+}
+header ul.nav li {
+    margin: 0 0.25rem;
+    font-size: 1.25em;
+}
+header ul.nav .logo {
+    font-weight: bold;
+    /* flex-grow: 1; */
+}
+header ul.nav a {
+    display: inline-block;
+    text-decoration: none;
+    color: #000;
+    background-color: #93d34f;
+    padding: 0.2rem 0.5rem;
+    border: 1px solid #59b06f;
+}
+header ul.nav a:hover {
+    background-color: #d9dad9;
+}
+main {
+    flex-grow: 1;
+}
+p, h1, h2, h3, h4, h5, h6 {
+    padding: 0.2rem 0.5rem;
+    margin: 0;
+}
+a {
+    color: #447733;
+}
+footer {
+    background-color: #aacc99;
+}
+.vehicles-0 {
+    background-color: #c0ffb0;
+}
+.vehicles-1 {
+    background-color: #ffcc99;
+}
+.vehicles-2 {
+    background-color: #99ccff;
+}
+.vehicles-3, .book-status-7 {
+    background-color: #ff9999;
+}
+.vehicles-instance-id {
+    float: right;
+    color: #999999;
+    padding: 0 0.5rem;
+}
+ul.paginator {
+    list-style: none;
+    padding-inline-start: 0.5rem;
+}
+.paginator {
+    display: flex;
+    flex-direction: row;
+    padding: 0.5rem;
+    gap: 0.5rem;
+}
+.paginator a, .paginator .current {
+    text-decoration: none;
+    padding: 0 0.5rem;
+    border: 1px solid #aacc99;
+    background-color: #e8ffd0;
+    border-radius: 0.5rem;
+}
+form {
+    padding: 0.5rem;
+}
+img.vehicles-photo {
+    max-width: 20%;
+    margin: 0 0.5rem;
+    border: 2px solid #000;
+}
+ul.vehicles- {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    list-style: none;
+    gap: 0.5rem;
+    padding-inline-start: 0;
+}
+ul.vehicles- li {
+    max-width: 30vw;
+}
+ul.vehicles- img.book-cover {
+    max-width: 100%;
+}

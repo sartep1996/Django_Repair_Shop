@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}{{ order }} | {{ block.super }}{% endblock title %}
+{% block content %}
+<h1>{{ order }}</h1>
+<p>{{ order.vehicle }}</p>
+{% if order.vehicle.all.count > 0 %}
+<h2>{{ order.vehicle }}'s vehicles in Petras Garage</h2>
+<ul>
+    {% for order in order.all %}
+        <li><a href="{% url 'order_detail' order.pk %}">{{ order.vehicle }}</a></li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endblock content %}

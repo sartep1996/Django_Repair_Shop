@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}{{ vehicle_detail }} | {{ block.super }}{% endblock title %}
+{% block content %}
+<h1>{{ vehicle_detail }}</h1>
+<p>{{ aut }}</p>
+{% if vehicles.all.count > 0 %}
+<h2>{{ vehicle.vehicle_model }} in out garage</h2>
+<ul>
+    {% for vehicle in vehicles.all %}
+        <li><a href="{% url 'vehicle_detail' vehicle.pk %}">{{ vehicle.vehicle_model }}</a></li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endblock content %}

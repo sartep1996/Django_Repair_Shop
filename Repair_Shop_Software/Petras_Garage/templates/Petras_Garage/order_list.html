@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %} Order List {{ block.super }}{% endblock title %}
+{% block content %}
+<h1>Orders in Repair Shop</h1>
+<form action="{{request.path}}" method="get">
+    <input name="query" type="text" value="{{request.GET.query}}">
+    <button type="submit" > &#128269;</button>
+    {% if request.GET.query%}<a href="{{ request.path }}">clear</a>{%endif%}
+</form>
+{% if order_list %}
+<ul>
+    {% for order in order_list %}
+        <li><a href="{% url 'order_detail' order.pk %}">{{ order }}</a></li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No Services Found</p>
+{% endif %}
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">back</a>
+        {% endif %}
+
+        <span class="current">
+            {{ page_obj.number }} iš {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">forward</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">backward &raquo;</a>
+        {% endif %}
+    </span>
+</div>    
+{% endblock content %}
