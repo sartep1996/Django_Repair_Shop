@@ -14,6 +14,19 @@
         <li><a href="{%url 'index' %}">Home</a></li>
         <li><a href="{%url 'vehicle_list' %}">Vehicles</a></li>
         <li><a href="{%url 'order_list' %}">Orders</a></li>
+        {% if user.is_authenticated %}
+            <li class="user">
+                &#128100; {{ user.username }}
+            </li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+        {% else %}
+            <li><a href="{% url 'login' %}">Login</a></li>
+        {% endif %}
+        {% if user.is_authenticated %}
+            {% if user.is_staff or user.is_superuser %}
+                <li><a href="{% url 'admin:index' %}">Admin</a></li>
+            {% endif %}
+        {% endif %}
     </ul>
 </header>
 <main>{%block content%}

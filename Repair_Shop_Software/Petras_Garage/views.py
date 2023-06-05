@@ -5,8 +5,7 @@ from .models import Vehicle, VehicleModel, Service, Order, OrderLine
 from django.views import generic
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.views import View
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 
@@ -25,11 +24,15 @@ def index(request):
 
     num_order = Order.objects.all().count()
 
+    num_visits = request.session.get('num_visits', 1)
+    request.session['num_visits'] = num_visits + 1
+
     context = {
         'num_vehicles' :  num_vehicles,
         'num_vehicle_models' : num_vehicle_model,
         'num_service' : num_service,
-        'num_order' : num_order
+        'num_order' : num_order,
+        'num_visits' : num_visits,
 
     }
 
@@ -85,28 +88,20 @@ class OrderView(generic.ListView):
             )
         return qs
 
-# class OrderDetailView(generic.DetailView):
-#     model = Order
-#     template_name = 'Petras_Garage/order_detail.html'
-#     total_price = sum(entry.price for entry in order.order_entries.all())
+class OrderDetailView(generic.DetailView):
+    model = Order
+    template_name = 'Petras_Garage/order_detail.html'
+    # total_price = sum(entry.price for entry in order.order_entries.all())
 
-#     context_object_name = 'order'
+    context_object_name = 'order'
 
-# class OrderDetailView(generic.DetailView):
-#     def get(self, request, pk):
-#         order = get_object_or_404(Order, pk=pk)
-#         total_price = sum(entry.price for entry in order.order_entries.all())
-#         return render(request, 'service/orders_detail.html', {
-#             'order': order,
-#             'total_price': total_price
-#         })
+class User(LoginRequiredMixin, generic.ListView):
+    model = Vehicle
+    template_name = 'Petras_Garage/user_order_list.html'
+    paginate_by = 10
+
+    def get_queryset(self) -> QuerySet[Any]:
+        qs = super().get_queryset()
+        qs = qs.filter(reader=self.request.user)
+        return qs
     
-
-class OrderDetailView(View):
-    def get(self, request, pk):
-        order = get_object_or_404(Order, pk=pk)
-        total_price = order.order_entries.aggregate(Sum('price'))['price__sum']
-        return render(request, 'service/orders_detail.html', {
-            'order': order,
-            'total_price': total_price
-        })

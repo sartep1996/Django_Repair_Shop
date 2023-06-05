@@ -1,9 +1,9 @@
 from django.db import models
-
-# Create your models here.
-from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
+import uuid
+from django.contrib.auth.models import User
+
 
 # Create your models here.
 class VehicleModel(models.Model):
@@ -23,12 +23,14 @@ class VehicleModel(models.Model):
 
 class Vehicle(models.Model):
     license_plate = models.CharField(_("license plate number"), max_length=100)
+    vin_code = models.CharField(_("VIN code"), max_length=100)
+    note = models.CharField(_("note"), max_length=100)
     vehicle_model = models.ForeignKey(
         VehicleModel,
         verbose_name=_("Vehicle model"),
         on_delete=models.CASCADE,
-        related_name='Vehicles'
-    )
+        related_name='Vehicles')
+
     
     photo = models.ImageField(
     _("photo"), 
@@ -36,10 +38,17 @@ class Vehicle(models.Model):
     null=True, 
     blank=True,
     )
+    service_receiver = models.ForeignKey(
+        User, 
+        verbose_name=('customer'),
+        on_delete = models.CASCADE,
+        related_name='orders',
+        null=True,
+        blank=True
+
+    )
 
     # models.CharField(_("automobilio modelis"), max_length=100)
-    vin_code = models.CharField(_("VIN code"), max_length=100)
-    client = models.CharField(_("Client"), max_length=100)
 
     class Meta:
         verbose_name = _("vehicle")
@@ -53,6 +62,8 @@ class Vehicle(models.Model):
     
     def display_modelis(self):
         return  ','.join(vehicle_model.maker for vehicle_model in self.vehicle_model.all()[:3])
+    
+
 
     
 class Order(models.Model):
@@ -128,23 +139,4 @@ class OrderLine(models.Model):
     def display_service(self):
         return ','.join(service.name for service in self.service.all()[:3])
     
-    def save(self, *args, **kwargs):
-        if self.price == 0:
-            self.price = self.service.price
-        self.total = self.price * self.quantity
-        super().save(*args, **kwargs)
-        self.order.price = self.order.order_entries.aggregate(models.Sum("total"))["total__sum"]
-        self.order.save()
-
-    STATUS_CHOICES = [
-        ("new", "New"),
-        ("processing", "Processing"),
-        ("complete", "Complete"),
-        ("cancelled", "Cancelled"),
-    ]
-    status = models.CharField(
-        _("Status"),
-        max_length=20, 
-        choices=STATUS_CHOICES, 
-        default=0, 
-        db_index=True)
+    

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}My Vehicles at {{ block.super }}{% endblock title %}
+{% block content %}
+<h1>My Vehicles</h1>
+{% if vehicle_list %}
+<ul>
+    {% for vehicle in vehicle_list %}
+        <li>
+            <a href="{% url 'vehicle_detail' vehicle.pk %}">{{ vehicle.license_plate }}</a>
+            {{ vehicle.vin_code }} - {{ vehicle.client }}
+            {% if vehicle.photo %}
+                <img src="{{ vehicle.photo.url }}" alt="Vehicle Photo">
+            {% endif %}
+            <span class="vehicle-instance-id">{{ vehicle.id }}</span>
+        </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p class="box box-warning">
+    You have no vehicles registered.
+</p>
+{% endif %}
+{% endblock content %}
