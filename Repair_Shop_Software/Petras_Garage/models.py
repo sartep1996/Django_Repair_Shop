@@ -169,4 +169,38 @@ class OrderLine(models.Model):
     def display_service(self):
         return ','.join(service.name for service in self.service.all()[:3])
     
+
+class OrderMessage(models.Model):
+    order = models.ForeignKey(
+        Order,
+        verbose_name = _("order"),
+        on_delete=models.CASCADE,
+        related_name='message',
+    )
+    messenger = models.ForeignKey(
+        User,
+        verbose_name=_("sender"), 
+        on_delete=models.SET_NULL,
+        related_name='order_message',
+        null=True, blank=True,
+    )
+
+    sent_at = models.DateTimeField(_("Sent"), auto_now_add=True)
+    content = models.TextField(_("content"), max_length=4000)
+
+    class Meta:
+        ordering = ['-sent_at']
+        verbose_name = _("order message")
+        verbose_name_plural = _("order messages")
+
+    def __str__(self):
+        return f"{self.sent_at}: {self.messenger}"
+    
+    def get_absolute_url(self):
+        return reverse("ordermessage_detail", kwargs={"pk": self.pk})
+        
+
+
+        
+    
     

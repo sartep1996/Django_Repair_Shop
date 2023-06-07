@@ -1,13 +1,15 @@
-from typing import Any
-from django.db.models.query import QuerySet
-from django.shortcuts import render, get_object_or_404
-from .models import Vehicle, VehicleModel, Service, Order, OrderLine
-from django.views import generic
-from django.core.paginator import Paginator
-from django.db.models import Q
+from typing import Any, Dict
 from django.contrib.auth.mixins import LoginRequiredMixin
-
-
+from django.contrib import messages
+from django.core.paginator import Paginator
+from django.db.models.query import QuerySet
+from django.db.models import Q
+from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404, reverse
+from django.utils.translation import gettext_lazy as _
+from django.views import generic
+from .forms import OrderMessageForm
+from .models import Vehicle, VehicleModel, Service, Order, OrderLine
 
 
 
@@ -88,12 +90,40 @@ class OrderView(generic.ListView):
             )
         return qs
 
-class OrderDetailView(generic.DetailView):
+class OrderDetailView(generic.DetailView, generic.edit.FormMixin):
     model = Order
     template_name = 'Petras_Garage/order_detail.html'
     # total_price = sum(entry.price for entry in order.order_entries.all())
+    # context_object_name = 'order'
+    form_class = OrderMessageForm
+ 
+    # def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+    #     context =  super().get_context_data(**kwargs)
+    #     context['total_price'] = sum(entry.price for entry in self.get_object().order_entries.all())
+    #     return context
 
-    context_object_name = 'order'
+    def get_initial(self) -> Dict[str, Any]:
+        initial = super().get_initial()
+        initial['order'] = self.get_object()
+        initial['messenger'] = self.request.user
+        return initial
+    
+    def post(self, request,  *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+        
+    def form_valid(self, form:Any) -> HttpResponse:
+        form.instance.order = self.get_object()
+        form.instance.messenger = self.request.user
+        form.save()
+
+    def get_success_url(self) -> str:
+        return reverse('order_detail', kwargs={'pk':self.get_object().pk})
+
 
 class UserOrderInstanceListView(LoginRequiredMixin, generic.ListView):
     model = Order

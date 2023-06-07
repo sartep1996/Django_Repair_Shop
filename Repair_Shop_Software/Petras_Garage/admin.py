@@ -30,6 +30,10 @@ class OrderAdmin(admin.ModelAdmin):
 class ServiceAdmin(admin.ModelAdmin):
     list_display = ('name', 'price')
 
+class OrderMessageAdmin(admin.ModelAdmin):
+    list_display = ('sent_at', 'order', 'messenger', 'content')
+
+
 
 
 admin.site.register(Vehicle, VehicleAdmin)
