@@ -3,10 +3,12 @@
 {% block content %}
 <h1>{{ order }}</h1>
 <strong>Order #: </strong>{{ order.id }}<br>
-<strong>Vehicle Owner: </strong>{{ order.vehicle.customer }}<br>
+<strong>Note: </strong>{{ order.vehicle.note }}<br>
+<strong>Vehicle Owner: </strong>{{ order.vehicle.service_receiver }}<br>
 <strong>Vehicle: </strong>{{ order.vehicle }}<br>
 <strong>Date: </strong>{{ order.date }}<br>
-<strong>Order Entries:</strong>
+<strong>Order Sum: </strong>{{ order.sum }} Eur <br>
+<strong> When it has to be repaired: </strong>{{ order.due_to_finish_repair }}<br>
 <ul>
     {% for entry in order.order_entries.all %}
     <li>

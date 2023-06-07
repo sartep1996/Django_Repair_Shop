@@ -3,6 +3,9 @@ from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
 import uuid
 from django.contrib.auth.models import User
+from django.utils import timezone
+from tinymce.models import HTMLField
+
 
 
 # Create your models here.
@@ -25,6 +28,7 @@ class Vehicle(models.Model):
     license_plate = models.CharField(_("license plate number"), max_length=100)
     vin_code = models.CharField(_("VIN code"), max_length=100)
     note = models.CharField(_("note"), max_length=100)
+    condition = HTMLField()
     vehicle_model = models.ForeignKey(
         VehicleModel,
         verbose_name=_("Vehicle model"),
@@ -55,13 +59,14 @@ class Vehicle(models.Model):
         verbose_name_plural = _("vehicles")
 
     def __str__(self):
-        return f"{self.license_plate}  {self.vin_code} {self.client} "
+        return f"{self.license_plate}  {self.vin_code} {self.note}  {self.service_receiver}"
 
     def get_absolute_url(self):
         return reverse("vehicle_detail", kwargs={"pk": self.pk})
     
     def display_modelis(self):
         return  ','.join(vehicle_model.maker for vehicle_model in self.vehicle_model.all()[:3])
+    
     
 
 
@@ -76,6 +81,22 @@ class Order(models.Model):
     )
     sum = models.IntegerField(_('Sum'))
 
+    due_to_finish_repair = models.DateField(_("Due to finish repair"), null=True, blank=True, db_index=True)
+
+    STATUS_CHOICES = [
+        ("new", "New"),
+        ("processing", "Processing"),
+        ("complete", "Complete"),
+        ("cancelled", "Cancelled"),
+    ]
+    status = models.CharField(
+        _("Status"),
+        max_length=20, 
+        choices=STATUS_CHOICES, 
+        default=0, 
+        db_index=True)
+
+
     class Meta:
         verbose_name = _("Order")
         verbose_name_plural = _("Orders")
@@ -88,6 +109,15 @@ class Order(models.Model):
     
     def display_automobilis(self):
         return ','.join(vehicle.license_plate for vehicle in self.vehicle.all()[:3])
+
+    @property
+    def service_receiver(self):
+        return self.vehicle.service_receiver
+    
+    @property
+    def is_due_repair_passed(self):
+        return timezone.now() > self.due_to_finish_repair
+
 
 class Service (models.Model):
     name = models.CharField(_("Name"), max_length=100)

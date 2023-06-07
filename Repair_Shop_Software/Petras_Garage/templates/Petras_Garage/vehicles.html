@@ -24,6 +24,7 @@
                         {{vehicle.vehicle_model}}
                     {% endif %}
                 </h3>
+                <p>{{ vehicle.condition | safe }}</p>
             </a>
             {% comment %} <p>by <a href="{% url 'automobiliu_detail', automobil.Automobilis.pk %}">{{ automobilis.Automobilis}} {% endcomment %}
         </li>

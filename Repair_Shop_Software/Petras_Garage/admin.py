@@ -6,8 +6,8 @@ from . import models
 from .models import VehicleModel, Vehicle, Order, Service, OrderLine
 
 class VehicleAdmin(admin.ModelAdmin):
-    list_display = ('license_plate', 'vehicle_model', 'vin_code', 'client')
-    list_filter = ('vehicle_model', )
+    list_display = ('license_plate', 'vehicle_model', 'vin_code', 'service_receiver')
+    list_filter = ('vehicle_model',)
     search_fields = ('license_plate', 'vin_code')
 
 class VehicleModelAdmin(admin.ModelAdmin):
@@ -23,12 +23,14 @@ class OrderLineAdmin(admin.ModelAdmin):
 
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('date', 'vehicle', 'sum')
+    list_display = ('date', 'vehicle', 'sum', 'service_receiver', 'due_to_finish_repair')
     inlines = [OrderLineInLine]
  
 
 class ServiceAdmin(admin.ModelAdmin):
     list_display = ('name', 'price')
+
+
 
 admin.site.register(Vehicle, VehicleAdmin)
 admin.site.register(VehicleModel, VehicleModelAdmin)

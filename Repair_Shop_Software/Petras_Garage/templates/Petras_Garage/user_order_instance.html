@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}My Orders | {{ block.super }}{% endblock title %}
+{% block content %}
+<h1>My Orders</h1>
+{% if order_list %}
+<ul>
+    {% for order in order_list %}
+        <li>
+            <a href="{% url 'order_detail' order.pk %}">{{ order }}</a>
+            {% if order.is_due_repair_passed %}<span class="order-overdue">PAST DUE!</span>{% endif %}
+            <span class="order-instance-id">{{ order.id }}</span>
+        </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p class="box box-warning">
+    Your order history is empty.
+</p>
+{% endif %}
+{% endblock content %}

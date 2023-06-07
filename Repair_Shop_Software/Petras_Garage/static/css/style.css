@@ -103,3 +103,6 @@ ul.vehicles- li {
 ul.vehicles- img.vehicle-photo {
     max-width: 100%;
 }
+.red {
+    color: red;
+}

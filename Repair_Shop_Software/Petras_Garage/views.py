@@ -95,13 +95,20 @@ class OrderDetailView(generic.DetailView):
 
     context_object_name = 'order'
 
-class User(LoginRequiredMixin, generic.ListView):
-    model = Vehicle
+class UserOrderInstanceListView(LoginRequiredMixin, generic.ListView):
+    model = Order
     template_name = 'Petras_Garage/user_order_list.html'
-    paginate_by = 10
+    paginate_by = 3
 
-    def get_queryset(self) -> QuerySet[Any]:
+    def get_queryset(self):
         qs = super().get_queryset()
-        qs = qs.filter(reader=self.request.user)
-        return qs
+        qs = qs.filter(vehicle__service_receiver= self.request.user)
+        return qs    
+    
+    
+    
+    # def get_queryset(self) -> QuerySet[Any]:
+    #     qs = super().get_queryset()
+    #     qs = qs.filter(service_receiver=self.request.service_receiver)
+    #     return qs
     
