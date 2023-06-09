@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %} Create {{ block.super }} Vehicle{% endblock title %}
+{% block content %}
+<h1> Update {{ user }} Profile</h1>
+<form method="post" action="{% url 'create_vehicle' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit</button>
+</form>
+{% endblock content %}

@@ -1,12 +1,43 @@
 from django.contrib.auth import get_user_model
-
-from django.shortcuts import redirect, get_list_or_404, render
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect, get_object_or_404, render
 from django.contrib.auth.forms import User
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
+from . forms import ProfileUpdateForm, UserUpdateForm, VehicleForm, ReservationForm
+from Petras_Garage.models import Vehicle
+from . models import Reservation
+
 
 
 User = get_user_model()
+
+
+@login_required
+@csrf_protect
+def profile_update(request):
+     if request.method == "POST":
+         user_form = UserUpdateForm(request.POST, instance=request.user)
+         profile_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
+         if user_form.is_valid() and profile_form.is_valid():
+             user_form.save()
+             profile_form.save()
+             messages.success(request, "Profile updated.")
+             return redirect('profile')
+     else:
+         user_form = UserUpdateForm(instance=request.user)
+         profile_form = ProfileUpdateForm(instance=request.user.profile)
+     return render(request, 'user_profile/profile_update.html', {'user_form': user_form, 'profile_form': profile_form})
+
+
+
+@login_required
+def profile(request, user_id=None):
+    if user_id == None:
+        user = request.user
+    else:
+        user = get_object_or_404(get_user_model(), id=user_id)
+    return render(request, 'user_profile/profile.html', {'user_': user})
 
 @csrf_protect
 def signup(request):
@@ -43,3 +74,50 @@ def signup(request):
             messages.success(request, "User registration successful!")
             return redirect('login')
     return render(request, 'user_profile/signup.html')
+
+@login_required
+def create_vehicle(request):
+    if request.method == 'GET':
+        form = VehicleForm()
+        return render(request, 'user_profile/create_vehicle.html', {'form': form})
+    elif request.method == 'POST':
+        form = VehicleForm(request.POST)
+        if form.is_valid():
+            vehicle = form.save(commit=False)
+            vehicle.service_receiver = request.user
+            vehicle.save()
+            return redirect('vehicle_detail', pk=vehicle.pk)
+        
+        return render(request, 'user_profile/create_vehicle.html', {'form': form})
+    
+@login_required
+def my_vehicles(request):
+    user_vehicles = Vehicle.objects.filter(service_receiver = request.user)
+    return render(request, 'user_profile/my_vehicles.html', {'user_vehicles': user_vehicles})
+
+@login_required
+def create_reservation(request):
+    
+    if request.method == 'POST':
+        form = ReservationForm(request.POST)
+        if form.is_valid():
+            reservation = form.save(commit=False)
+            reservation.service_receiver = request.user
+            reservation.save()
+            messages.success(request, "Reservation is created successfully!")
+            return redirect ('my_reservations')
+    else:
+        form = ReservationForm()
+        form.fields["vehicle"].queryset = Vehicle.objects.filter(service_receiver=request.user)
+
+    return render(request, 'user_profile/create_reservation.html', {'form':form})
+
+@login_required
+def my_reservations(request):
+    service_receiver_reservations = Reservation.objects.filter(service_receiver=request.user)
+    return render(request, 'user_profile/my_reservations.html', {'service_receiver_reservations': service_receiver_reservations} )
+
+
+
+            
+        

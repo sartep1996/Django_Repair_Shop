@@ -13,9 +13,9 @@
         <li>
             <a href="{% url 'vehicle_detail' vehicle.pk %}">
                 {% if vehicle.photo %}
-                    <img class="vehicle-photo" src="{{vehicle.photo.ulr}}">
+                    <img class="vehicle-photo" src="{{vehicle.photo.url}}">
                 {% else %}
-                    <img class="vehicle-photo" src="{% static 'Petras_Garage/img/default_photo.jpg'%}">
+                     <img class="vehicle-photo" src="{% static 'Petras_Garage/img/default_photo.jpeg'%}">
                 {% endif %}
                 <h3>
                     {% if vehicle.vehicle_model|length > 36 %}
@@ -29,6 +29,9 @@
             {% comment %} <p>by <a href="{% url 'automobiliu_detail', automobil.Automobilis.pk %}">{{ automobilis.Automobilis}} {% endcomment %}
         </li>
     {% endfor %}
+</ul>
+<ul>
+    <li><a href="{% url 'create_vehicle' %}">Add My Vehicle</a></li>
 </ul>
 {% with vehicle_list as page_obj %}
     {% include 'includes/paginator_pages.html' %}

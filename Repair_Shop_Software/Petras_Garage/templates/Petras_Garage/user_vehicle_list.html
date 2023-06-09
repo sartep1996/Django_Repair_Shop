@@ -9,7 +9,9 @@
             <a href="{% url 'vehicle_detail' vehicle.pk %}">{{ vehicle.license_plate }}</a>
             {{ vehicle.vin_code }} - {{ vehicle.client }}
             {% if vehicle.photo %}
-                <img src="{{ vehicle.photo.url }}" alt="Vehicle Photo">
+                <img class ="vehicle-photo" src="{{ vehicle.photo.url }}">
+            {% else %}
+                <img class="vehicle-photo" src="{% static 'Petras_Garage/img/default_cover.jpeg' %}">
             {% endif %}
             <span class="vehicle-instance-id">{{ vehicle.id }}</span>
         </li>

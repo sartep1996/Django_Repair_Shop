@@ -52,7 +52,11 @@
     {% if order.message.count > 0 %}
         <ul>
             {% for message in order.message.all %}
-                <li>{{ message.sent_at }} by {{ message.messanger }}<br>
+                <li>{{ message.sent_at }} by <a href="{% url 'profile' review.reviewer.id %}">
+                    {% if message.messanger.profile.picture %}
+                        <img src="{{ message.messanger.profile.picture.url }}" class="user-avatar">
+                    {% endif %}
+                    {{ message.messanger }}</a><br>
                     {{ message.content }}
                 </li>
             {% endfor %}

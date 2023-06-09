@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %} My Vehicles {% endblock title %}
+{% block content %}
+    <h1>My Vehicles</h1>
+    {% if user_vehicles|length > 0 %}
+        <ul>
+            {% for vehicle in user_vehicles %}
+                <li>{{ vehicle.vehicle_model }}</li>
+            {% endfor %}
+        </ul>
+        <ul>
+            <li><a href="{% url 'create_vehicle' %}">Add My Vehicle</a></li>
+        </ul>
+    {% else %}
+        <p>No vehicles found.</p>
+    {% endif %}
+{% endblock content %}

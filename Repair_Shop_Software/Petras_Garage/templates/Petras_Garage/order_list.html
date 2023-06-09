@@ -18,6 +18,9 @@
     <div class="order {% if order.is_due_repair_passed %}red{% endif %}">
         <h3>Order Date: {{ order.date }}</h3>    
     </div>
+<ul>
+    <li><a href="{% url 'create_reservation' %}">Add My Order </a></li>
+</ul>
 {% endfor %}
 {% else %}
 <p>No Services Found</p>
@@ -37,6 +40,9 @@
             <a href="?page={{ page_obj.next_page_number }}">forward</a>
             <a href="?page={{ page_obj.paginator.num_pages }}">backward &raquo;</a>
         {% endif %}
+        <ul>
+    <li><a href="{% url 'create_reservation' %}">Add My Order</a></li>
+</ul>
     </span>
 </div>    
 {% endblock content %}

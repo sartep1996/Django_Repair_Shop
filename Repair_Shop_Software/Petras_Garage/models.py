@@ -37,7 +37,7 @@ class Vehicle(models.Model):
 
     
     photo = models.ImageField(
-    _("photo"), 
+    ("photo"), 
     upload_to='Petras_Garage/vehicle_photos', 
     null=True, 
     blank=True,
@@ -51,6 +51,7 @@ class Vehicle(models.Model):
         blank=True
 
     )
+    
 
     # models.CharField(_("automobilio modelis"), max_length=100)
 

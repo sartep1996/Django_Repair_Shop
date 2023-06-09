@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %} My Reservations {% endblock title %}
+{% block content%}
+    <h1> My Reservations</h1>
+    {% if service_receiver_reservations%}
+        <ul>
+            {% for reservation in service_receiver_reservations%}
+                <li>{{reservation.vehicle}} - {{reservation.reservation_date}}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p> No reservations found.</p>
+    {% endif %}
+{% endblock content %}
